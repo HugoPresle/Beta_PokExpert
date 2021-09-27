@@ -32,11 +32,7 @@
                                                     <label class="form-check-label" for="Formradio1">Normal</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="Formradio" id="Formradio2" value="1">
-                                                    <label class="form-check-label" for="Formradio2">Mega-Evolution</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="Formradio" id="Formradio3" value="2">
+                                                    <input class="form-check-input" type="radio" name="Formradio" id="Formradio3" value="1">
                                                     <label class="form-check-label" for="Formradio3">Gigamax</label>
                                                 </div>
                                                 <br>
@@ -127,13 +123,7 @@
                                                                                 case 0:
                                                                                     $sprite="Sprite_3D";
                                                                                     break;
-                                                                                case 1:
-                                                                                    if ($pokemon->Sprite_3D_Mega) 
-                                                                                    {   
-                                                                                        $sprite="Sprite_3D";
-                                                                                    }
-                                                                                    break;
-                                                                                case 2: 
+                                                                                case 1: 
                                                                                     if ($pokemon->Sprite_3D_Giga) 
                                                                                     {
                                                                                         $sprite="Sprite_3D_Giga";
@@ -161,15 +151,16 @@
                                                                         </tr><?php 
                                                                         }
                                                                         
-                                                                    } 
-                                                                    catch (\Throwable $th) 
+                                                                    }
+                                                                    catch (\Throwable $th)
                                                                     {
-                                                                    }   
+                                                                        echo '<div class="alert alert-danger text-center col-md-6 mx-auto" role="alert">
+                                                                                <h4><i class="fas fa-exclamation-triangle"></i> Oops</h4>
+                                                                                <p>Something went wrong... Please reload the page.</a>
+                                                                            </div>';
+                                                                    }  
                                                                 } 
-                                                            }
-                                                            catch (\Throwable $th) 
-                                                            {
-                                                            }
+                                                            }catch (\Throwable $th){}
                                                         ?>
                                                     </tbody>
                                                 </table>

@@ -79,7 +79,7 @@
                                                                 {{-- 3D_Shiny --}}
                                                                 <div class="form-row align-items-center">
                                                                     <div style="float: left">
-                                                                        <img id="Sprite_3D_ShinyImg" src="../../../img/Sprite_Pokemon/Sprite_3D_Shiny/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Shiny}}">
+                                                                        <img id="Sprite_3D_ShinyImg" src="../../../img/Sprite_Pokemon/Sprite_3D_Shiny/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D}}">
                                                                     </div>
                                                                     <div style="float: right">
                                                                         <div class="custom-file">
@@ -93,50 +93,10 @@
                                                     </div>
                                                 {{-- 2 volet --}}
                                                     <div class="card">
-                                                        <div class="card-header" id="headingTwo">
-                                                            <h2 class="mb-0">
-                                                                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                                    [3D_Mega/3D_Mega_Shiny]
-                                                                </button>
-                                                            </h2>
-                                                        </div>
-                                                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                                                            <div class="card-body">
-                                                                {{-- 3D_Mega --}}
-                                                                <div class="form-row align-items-center">
-                                                                    <div style="float: left">
-                                                                        <img id="Sprite_3D_MegaImg" src="../../../img/Sprite_Pokemon/Sprite_3D_Mega/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Mega}}"/>
-                                                                    </div>
-                                                                    <div style="float: right">
-                                                                        <div class="custom-file">
-                                                                            <input type="file" class="custom-file-input" id="Sprite_3D_Mega_inp" onchange="imgChange('Sprite_3D_Mega');">
-                                                                            <label class="custom-file-label" for="Sprite_3D_Mega">Choose file</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <br>
-                                                                
-                                                                {{-- 3D_Mega_Shiny --}}
-                                                                <div class="form-row align-items-center">
-                                                                    <div style="float: left">
-                                                                        <img id="Sprite_3D_Mega_ShinyImg" src="../../../img/Sprite_Pokemon/Sprite_3D_Mega_Shiny/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Mega_Shiny}}"/>
-                                                                    </div>
-                                                                    <div style="float: right">
-                                                                        <div class="custom-file">
-                                                                            <input type="file" class="custom-file-input" id="Sprite_3D_Mega_Shiny_inp" onchange="imgChange('Sprite_3D_Mega_Shiny');">
-                                                                            <label class="custom-file-label" for="Sprite_3D_Mega_Shiny">Choose file</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {{-- 3 volet --}}
-                                                    <div class="card">
                                                         <div class="card-header" id="headingThree">
                                                             <h2 class="mb-0">
                                                                 <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                                    [3D_Gigamax/3D_Gigamax_Shiny]
+                                                                    [3D_Gigamax/]
                                                                 </button>
                                                             </h2>
                                                         </div>
@@ -157,7 +117,7 @@
                                                                 {{-- 3D_Giga_Shiny --}}
                                                                 <div class="form-row align-items-center">
                                                                     <div style="float: left">
-                                                                        <img id="Sprite_3D_Giga_ShinyImg" src="../../../img/Sprite_Pokemon/Sprite_3D_Giga_Shiny/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Giga_Shiny}}"/>
+                                                                        <img id="Sprite_3D_Giga_ShinyImg" src="../../../img/Sprite_Pokemon/Sprite_3D_Giga_Shiny/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Giga}}"/>
                                                                     </div>
                                                                     <div style="float: right">
                                                                         <div class="custom-file">
@@ -341,6 +301,13 @@
                                                     <label style="font-weight: bold" for="weight">Weight</label>
                                                     <input type="number" step="0.1" min="0" class="form-control" name="weight" id="weight" value="{{$pokemon->Poid}}">
                                                 </div>
+                                            </div>
+                                            {{-- MEGA ET FORM --}}
+                                            <div class="form-row align-items-center">
+                                                <div class="col-md-4 mb-3">
+                                                    <label style="font-weight: bold" for="weight">Mega Evolution</label>
+                                                    <input type="number" step="1" min="11000" class="form-control" name="Mega_Evolution" id="Mega_Evolution" value="{{$pokemon->Mega_Evolution}}">
+                                                </div>
                                                 <div class="col-md-4 mb-3">
                                                     <label style="font-weight: bold" for="weight">Alola Form</label>
                                                     <input type="number" step="1" min="10000" class="form-control" name="Form_Alola" id="Form_Alola" value="{{$pokemon->Form_Alola}}">
@@ -368,13 +335,21 @@
                                             <!-- Submit -->
                                             <div class="text-center">
                                                 <button type="submit" class="btn btn-secondary" name="submit" id="submit"><img src="../../../img/pokeball_menu/Super_Ball.png" alt="pokeball">UPDATE !<img src="../../../img/pokeball_menu/Super_Ball.png" alt="pokeball"></button>
+                                                </form>
+                                                <br>
+                                                <br>
+                                                <form method="POST" action="/delete_pokemon/0/{{$pokemon->Id}}" id="deleteform" onsubmit="return confirm('Are you sure you want to delete {{$pokemon->Nom}} ?');">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-danger" name="delete" id="delete" >
+                                                        Delete <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
                 </div>
             @else
                 <script>window.location = "/NoPokemonFound_ERROR";</script>')
@@ -386,7 +361,10 @@
                 <p>You don't have access to this page !<br> You are not a Pokemaster ...</p>
             </div>
         @endif  
-    @endauth  
+    @endauth 
+    @guest
+        <script>window.location = "/NoPageFound_ERROR";</script>')
+    @endguest  
 @endsection
 
 

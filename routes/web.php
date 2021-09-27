@@ -39,6 +39,7 @@ Route::get('/update/{Id}',[PokemonController::class,'loadById']);
 
 Route::post('/create_pokemon',[PokemonController::class,'create']);
 Route::post('/update_pokemon/{Id}',[PokemonController::class,'update']);
+Route::post('/delete_pokemon/{page}/{Id}',[PokemonController::class,'delete']);
 
 
 

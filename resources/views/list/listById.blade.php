@@ -101,21 +101,12 @@
                               case 0:
                                   $sprite="Sprite_3D";
                                   break;
-                              case 1:
-                                  if ($pokemon->Sprite_3D_Mega) 
-                                  {
-                                      $sprite="Sprite_3D_Mega";
-                                  }
-                                  else 
-                                  {   
-                                      $sprite="Sprite_3D";
-                                  }
-                                  break;
-                              case 2: 
+                              case 1: 
                                   if ($pokemon->Sprite_3D_Giga) 
                                   {
                                       $sprite="Sprite_3D_Giga";
                                   }
+                                  // else pour gerer erreur si le pokemon na pas de giga form qu'il puisse quand meme etre afficher
                                   else 
                                   {   
                                       $sprite="Sprite_3D";
@@ -157,23 +148,23 @@
             </div>
           </div>
           <br>
-              @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-secondary" name="btnsubmit" id="btnsubmit">
+            @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
+                <div class="text-center">
+                  <button type="submit" class="btn btn-secondary" name="btnsubmit" id="btnsubmit">
+                    <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
+                      Save Statut !
                       <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
-                        Save Statut !
-                        <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
-                    </button>
-                  </div>
-          </form>
-              <div class="text-center">
-                <form method="POST" action="/delete_list/0/{{$calendrier->Id}}" id="deleteform" onsubmit="return confirm('Are you sure you want to delete this list ?');">
-                  @csrf
-                  <button type="submit" class="btn btn-danger" name="delete" id="delete" >
-                      Delete <i class="fas fa-trash"></i>
                   </button>
-                </form>
-              </div>
+                </div>
+            </form>
+            <div class="text-center">
+              <form method="POST" action="/delete_list/0/{{$calendrier->Id}}" id="deleteform" onsubmit="return confirm('Are you sure you want to delete this list ?');">
+                @csrf
+                <button type="submit" class="btn btn-danger" name="delete" id="delete" >
+                    Delete <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
           @endif
       </div>
         

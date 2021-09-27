@@ -39,7 +39,7 @@
                                                 <td><input autocomplete="off" name="rang" class="form-control" type="text" value="{{$user->rang}}"></td>
                                                 <td><input autocomplete="off" name="description" class="form-control" type="text" value="{{$user->description}}"></td>
                                                 <td>
-                                                    <a class="btn btn-link" href="../profile/{{$user->name}}" style="text-decoration: none">
+                                                    <a class="btn btn-link" style="text-decoration: none" href="../profile/{{$user->name}}">
                                                         <i class="fas fa-id-card fa-lg"></i>
                                                     </a>
                                                     | 
@@ -116,6 +116,9 @@
             </div>
         @endif
     @endauth 
+    @guest
+        <script>window.location = "/NoPageFound_ERROR";</script>')
+    @endguest
 @endsection
 
 

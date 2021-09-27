@@ -45,74 +45,135 @@
               </thead>
               <tbody>
                 @foreach ($pokemons as $pokemon)
-                  @if ($pokemon->Id<10000) {{-- Pour cacher les formes alola qui on un id de plus de 10.000 --}}
-                    <tr>
-                        <td> {{$pokemon->Id}} </td>
-                        <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Sprite_2D}}" alt=""></td>
-                        <td> {{$pokemon->Nom}} </td>
-                        <td> {{$pokemon->Nom_Anglais}} </td>
-                        <td>
-                          @foreach ($type_pokemon as $item) 
-                              @if ($pokemon->Type_1==$item->Id)
-                                <a hidden>{{$pokemon->Type_1}}</a>
-                                <img alt="{{$pokemon->Type_1}}" src="../../../img/Sprite_Type/{{$item->Sprite}}">
-                              @endif
-                          @endforeach
-                          @foreach ($type_pokemon as $item) 
-                            @if ($pokemon->Type_2==$item->Id)
-                              <a hidden>{{$pokemon->Type_2}}</a>
-                              - <img alt="{{$pokemon->Type_2}}" src="../../../img/Sprite_Type/{{$item->Sprite}}">
-                            @endif
-                          @endforeach
-                      </td>
-                        {{-- seulement si admin --}}
-                        @auth
-                          @if (Auth::user()->rang =='admin')
-                            <td>
-                              <a href="../../update/{{$pokemon->Id}}" >
-                                <i class="fas fa-edit"></i>
-                              </a>
-                            </td>
-                          @endif
-                        @endauth
-                    </tr>
-                    @if ($pokemon->Form_Alola!= null)
-                      @php
-                        $pokeAlola=Pokemon::where('Id',$pokemon->Form_Alola)->first();
-                      @endphp
+                  <form action="../../delete_pokemon/{{$pokemon->Id}}" method="POST">
+                    @csrf
+                    @if ($pokemon->Id<10000) {{-- Pour cacher les formes alola qui on un id de plus de 10.000 --}}
                       <tr>
-                        <td>{{$pokemon->Id}}</td>
-                        <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokeAlola->Generation}}G/{{$pokeAlola->Sprite_2D}}" alt=""></td>
-                        <td> {{$pokeAlola->Nom}} </td>
-                        <td> {{$pokeAlola->Nom_Anglais}} </td>
-                        <td>
-                          @foreach ($type_pokemon as $item) 
-                              @if ($pokeAlola->Type_1==$item->Id)
-                                <a hidden>{{$pokeAlola->Type_1}}</a>
-                                <img src="../../../img/Sprite_Type/{{$item->Sprite}} ">
+                          <td> {{$pokemon->Id}} </td>
+                          <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Sprite_2D}}" alt=""></td>
+                          <td> {{$pokemon->Nom}} </td>
+                          <td> {{$pokemon->Nom_Anglais}} </td>
+                          <td>
+                            @foreach ($type_pokemon as $item) 
+                                @if ($pokemon->Type_1==$item->Id)
+                                  <a hidden>{{$pokemon->Type_1.'.'.$pokemon->Type_2}}</a>
+                                  <img alt="{{$pokemon->Type_1}}" src="../../../img/Sprite_Type/{{$item->Sprite}}">
+                                @endif
+                            @endforeach
+                            @foreach ($type_pokemon as $item) 
+                              @if ($pokemon->Type_2==$item->Id)
+                                - <img alt="{{$pokemon->Type_2}}" src="../../../img/Sprite_Type/{{$item->Sprite}}">
                               @endif
-                          @endforeach
-
-                          @foreach ($type_pokemon as $item) 
-                            @if ($pokeAlola->Type_2==$item->Id)
-                              <a hidden>{{$pokeAlola->Type_2}}</a>
-                              - <img src="../../../img/Sprite_Type/{{$item->Sprite}}">
-                            @endif
-                          @endforeach
+                            @endforeach
                         </td>
-                        {{-- seulement si admin --}}
-                        @auth
-                          @if (Auth::user()->rang =='admin')
-                            <td>
-                              <a href="../../update/{{$pokemon->Id +10000}}" >
-                                <i class="fas fa-edit"></i>
-                              </a>
-                            </td>
-                          @endif
-                        @endauth            
+                          {{-- seulement si admin --}}
+                          @auth
+                            @if (Auth::user()->rang =='admin')
+                              <td>
+                                <a class="btn btn-link" style="text-decoration: none" href="../../update/{{$pokemon->Id}}" >
+                                 <i class="fas fa-edit fa-lg"></i>
+                                </a>
+                                <button type="submit" class="btn btn-link" name="input" value="delete" onclick="return confirm('Are you sure you want to delete {{$pokemon->Nom}} ?');">
+                                  <i class="fas fa-trash-alt fa-lg" style="text-decoration: none;color: red"></i>
+                                </button>
+                              </td>
+                            @endif
+                          @endauth
                       </tr>
+                      @if ($pokemon->Form_Alola||$pokemon->Mega_Evolution)
+                        @php 
+                          if ($pokemon->Form_Alola)
+                          {
+                            $formPoke=Pokemon::where('Id',$pokemon->Form_Alola)->first();
+                            $color='rgb(170, 79, 63)';
+                            $mega=true;
+                          }
+                          else 
+                          {
+                            $formPoke=Pokemon::where('Id',$pokemon->Mega_Evolution)->first();
+                            $color='rgb(63, 136, 170)';
+                            $mega=false;
+                          }
+                        @endphp
+                        <tr style="color:{{$color}}">
+                          <td><a hidden>{{$pokemon->Id}}</a>
+                            @if (!$mega)
+                              <img src="../../../img/Sprite_Mega_Gemme/{{$pokemon->Nom."ite"}}.png">
+                            @endif
+                          </td>
+                          <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$formPoke->Generation}}G/{{$formPoke->Sprite_2D}}" alt=""></td>
+                          <td> {{$formPoke->Nom}} </td>
+                          <td> {{$formPoke->Nom_Anglais}} </td>
+                          <td>
+                            @foreach ($type_pokemon as $item) 
+                                @if ($formPoke->Type_1==$item->Id)
+                                  <a hidden>{{$formPoke->Type_1.'.'.$formPoke->Type_2}}</a>
+                                  <img src="../../../img/Sprite_Type/{{$item->Sprite}} ">
+                                @endif
+                            @endforeach
+
+                            @foreach ($type_pokemon as $item) 
+                              @if ($formPoke->Type_2==$item->Id)
+                                - <img src="../../../img/Sprite_Type/{{$item->Sprite}}">
+                              @endif
+                            @endforeach
+                          </td>
+                          {{-- seulement si admin --}}
+                          @auth
+                            @if (Auth::user()->rang =='admin')
+                              <td>
+                                <a class="btn btn-link" style="text-decoration: none" href="../../update/{{$formPoke->Id}}" >
+                                 <i class="fas fa-edit fa-lg"></i>
+                                </a>
+                                <button type="submit" class="btn btn-link" name="input" value="delete" onclick="return confirm('Are you sure you want to delete {{$formPoke->Nom}} ?');">
+                                  <i class="fas fa-trash-alt fa-lg" style="text-decoration: none;color: red"></i>
+                                </button>
+                              </td>
+                            @endif
+                          @endauth            
+                        </tr>
+                        @if ($pokemon->Nom=='Dracaufeu'||$pokemon->Nom=='Mewtwo')
+                          @php
+                            $nom=$pokemon->Nom."-mega-x";
+                            $formPokeX=Pokemon::where('Nom',$nom)->first();
+                          @endphp
+                          <tr style="color:{{$color}}">
+                            <td><a hidden>{{$pokemon->Id}}</a><img src="../../../img/Sprite_Mega_Gemme/{{$pokemon->Nom."ite_X"}}.png"></td>
+                            <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$formPokeX->Generation}}G/{{$formPokeX->Sprite_2D}}" alt=""></td>
+                            <td> {{$formPokeX->Nom}} </td>
+                            <td> {{$formPokeX->Nom_Anglais}} </td>
+                            <td>
+                              @foreach ($type_pokemon as $item) 
+                                  @if ($formPokeX->Type_1==$item->Id)
+                                  <a hidden>{{$formPokeX->Type_1.'.'.$formPokeX->Type_2}}</a>
+                                    <img src="../../../img/Sprite_Type/{{$item->Sprite}} ">
+                                  @endif
+                              @endforeach
+
+                              @foreach ($type_pokemon as $item) 
+                                @if ($formPokeX->Type_2==$item->Id)
+                                  - <img src="../../../img/Sprite_Type/{{$item->Sprite}}">
+                                @endif
+                              @endforeach
+                            </td>
+                            {{-- seulement si admin --}}
+                            @auth
+                              @if (Auth::user()->rang =='admin')
+                                <td>
+                                  <a class="btn btn-link" style="text-decoration: none" href="../../update/{{$formPokeX->Id}}" >
+                                   <i class="fas fa-edit fa-lg"></i>
+                                  </a>
+                                  <button type="submit" class="btn btn-link" name="input" value="delete" onclick="return confirm('Are you sure you want to delete {{$formPokeX->Nom}} ?');">
+                                    <i class="fas fa-trash-alt fa-lg" style="text-decoration: none;color: red"></i>
+                                  </button>
+                                </td>
+                              @endif
+                            @endauth            
+                          </tr> 
+                        @endif
+                      @endif
                     @endif
-                  @endif
+                  </form>
                 @endforeach  
               </tbody>
             </table>

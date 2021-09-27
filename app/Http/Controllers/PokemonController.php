@@ -18,7 +18,39 @@ class PokemonController extends Controller
 /**********           FUNCTION           **********/
 
     /******* POKEMON *******/
-        protected function create()
+    
+        //GETTER
+        public function loadAllOrderById()
+        {
+            try 
+            {
+                $pokemons=Pokemon::orderBy('Id')->get();
+                // SI PAGINATION                   
+                // $pokemons=Pokemon::orderBy('Id')->paginate(20); 
+                $type_pokemon=Type_Pokemon::all();
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+
+            return view('pokedex',compact('pokemons','type_pokemon'));
+        }
+        public function loadAllByGen($gen)
+        {
+            try 
+            {
+                $type_pokemon=Type_Pokemon::all();
+                $pokemons=Pokemon::where('Generation',$gen)->get();
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+            return view('pokedex',compact('pokemons','type_pokemon'));
+        }
+        //SETTER
+        public function create()
         {
             $Pokemon= new Pokemon;
             if (request()->index) 
@@ -35,11 +67,7 @@ class PokemonController extends Controller
             $Pokemon->Description= request()->desc;
             $Pokemon->Sprite_2D= request()->Sprite_2D;
             $Pokemon->Sprite_3D= request()->Sprite_3D;
-            $Pokemon->Sprite_3D_Shiny= request()->Sprite_3D_Shiny;
-            $Pokemon->Sprite_3D_Mega= request()->Sprite_3D_Mega;
-            $Pokemon->Sprite_3D_Mega_Shiny= request()->Sprite_3D_Mega_Shiny;
             $Pokemon->Sprite_3D_Giga= request()->Sprite_3D_Giga;
-            $Pokemon->Sprite_3D_Giga_Shiny= request()->Sprite_3D_Giga_Shiny;
             try 
             {
                 $Pokemon->save();
@@ -64,14 +92,10 @@ class PokemonController extends Controller
             $Pokemon->Poid= request()->weight;
             $Pokemon->Description= request()->desc;
             $Pokemon->Form_Alola=request()->Form_Alola;
+            $Pokemon->Mega_Evolution=request()->Mega_Evolution;
             $Pokemon->Sprite_2D= request()->Sprite_2D;
             $Pokemon->Sprite_3D= request()->Sprite_3D;
-            $Pokemon->Sprite_3D_Shiny= request()->Sprite_3D_Shiny;
-            $Pokemon->Sprite_3D_Mega= request()->Sprite_3D_Mega;
-            $Pokemon->Sprite_3D_Mega_Shiny= request()->Sprite_3D_Mega_Shiny;
             $Pokemon->Sprite_3D_Giga= request()->Sprite_3D_Giga;
-            $Pokemon->Sprite_3D_Giga_Shiny= request()->Sprite_3D_Giga_Shiny;
-
             try 
             {
                 $Pokemon->save();
@@ -81,43 +105,88 @@ class PokemonController extends Controller
             {
                 request()->session()->flash('alert-danger', 'Oops something went wrong...'); 
             }
-            return redirect()->back();
+            return redirect('/pokedex');
             
         }
-        //GET ALL POKEMON ORDER BY ID
-        protected function loadAllOrderById()
+        public function delete($page,$id)
         {
             try 
             {
-                $pokemons=Pokemon::orderBy('Id')->get();
-                // SI PAGINATION                   
-                // $pokemons=Pokemon::orderBy('Id')->paginate(20); 
-                $type_pokemon=Type_Pokemon::all();
+                $pokemon=Pokemon::where('id',$id)->first();
+                $name=$pokemon->Nom;
+                $pokemon->delete();
+                request()->session()->flash('alert-success', 'The Pokemon "'.$name.'" was successful delete!');
             } 
             catch (\Throwable $th) 
             {
                 request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
             }
-
-            return view('pokedex',compact('pokemons','type_pokemon'));
+            if ($page==0) 
+            {
+                return redirect('/pokedex');
+            }
+            else 
+            {
+                return redirect()->back();
+            }
         }
-
-        //GET ALL POKEMON BY GEN
-        protected function loadAllByGen($gen)
-        {
+     
+    /******* LIST *******/   
+        //GETTER
+        public function load()
+        { 
             try 
             {
-                $type_pokemon=Type_Pokemon::all();
-                $pokemons=Pokemon::where('Generation',$gen)->get();
+                $pokemons=Pokemon::all();
             } 
             catch (\Throwable $th) 
             {
                 request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
             }
-            return view('pokedex',compact('pokemons','type_pokemon'));
+            return view('list/create_list',compact('pokemons'));
         }
-        
-        //Load POKEMON BY ID
+        public function loadPublicList()
+        { 
+            try 
+            {
+                $calendriers=Calendrier::where('Public',0)->get();
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+            return view('/list/list',compact('calendriers'));
+        }
+        public function loadListById($id)
+        {
+            try 
+            {
+                $calendrier=Calendrier::where('Id',$id)->first();
+                $lignes=Ligne::where('Id_calendrier',$calendrier->Id)->get();
+                $nbPokemonCapturer=0;
+                $nbPokemonRestant=0;
+                foreach ($lignes as $ligne) 
+                {
+                    $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
+                    if ($calendrier_Pokemon->Statut==1) 
+                    {
+                        $nbPokemonCapturer++;
+                    }
+                    else
+                    {
+                        $nbPokemonRestant++;
+                    }
+                }
+                
+                $total=($nbPokemonCapturer+$nbPokemonRestant);
+                $totalP=round(((100*$nbPokemonCapturer)/$total), 2);
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+            return view('/list/listById',compact('calendrier','lignes','totalP'));
+        }
         public function loadById($id)
         {
             try 
@@ -133,7 +202,7 @@ class PokemonController extends Controller
             
         }
 
-    /******* LIST *******/
+        //SETTER
         public function create_list()
         { 
             try 
@@ -168,11 +237,7 @@ class PokemonController extends Controller
                             $ligne->save();
                             
                             $success++;
-                        } 
-                        catch (\Throwable $th) 
-                        { 
-                            request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.');   
-                        }
+                        }catch (\Throwable $th){}
                     }
                     if ($success>0) 
                     {
@@ -197,7 +262,6 @@ class PokemonController extends Controller
             }
             return redirect()->back();
         }
-
         public function update_list($id)
         { 
             try 
@@ -240,8 +304,7 @@ class PokemonController extends Controller
             
             return redirect()->back();
         }
-
-        public function delete_list($test,$id)
+        public function delete_list($page,$id)
         { 
             try 
             {
@@ -261,7 +324,7 @@ class PokemonController extends Controller
             {
                 request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
             }
-            if ($test==0) 
+            if ($page==0) 
             {
                 return redirect('/my_list');
             }
@@ -271,64 +334,8 @@ class PokemonController extends Controller
             }
         }
 
-        public function load()
-        { 
-            try 
-            {
-                $pokemons=Pokemon::all();
-            } 
-            catch (\Throwable $th) 
-            {
-                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
-            }
-            return view('list/create_list',compact('pokemons'));
-        }
-
-        public function loadPublicList()
-        { 
-            try 
-            {
-                $calendriers=Calendrier::where('Public',0)->get();
-            } 
-            catch (\Throwable $th) 
-            {
-                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
-            }
-            return view('/list/list',compact('calendriers'));
-        }
-
-        public function loadListById($id)
-        {
-            try 
-            {
-                $calendrier=Calendrier::where('Id',$id)->first();
-                $lignes=Ligne::where('Id_calendrier',$calendrier->Id)->get();
-                $nbPokemonCapturer=0;
-                $nbPokemonRestant=0;
-                foreach ($lignes as $ligne) 
-                {
-                    $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
-                    if ($calendrier_Pokemon->Statut==1) 
-                    {
-                        $nbPokemonCapturer++;
-                    }
-                    else
-                    {
-                        $nbPokemonRestant++;
-                    }
-                }
-                
-                $total=($nbPokemonCapturer+$nbPokemonRestant);
-                $totalP=round(((100*$nbPokemonCapturer)/$total), 2);
-            } 
-            catch (\Throwable $th) 
-            {
-                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
-            }
-            return view('/list/listById',compact('calendrier','lignes','totalP'));
-        }
-
     /******* PROFILE *******/
+        //GETTER
         public function getProfile($name)
         { 
             try 
@@ -341,89 +348,6 @@ class PokemonController extends Controller
             }
             return view('profile',compact('user'));
         }
-
-        public function update_profile($id)
-        { 
-            try 
-            {
-                $exist=0;
-                $user = User::where("id",$id)->first();
-
-                if ($user->name!=request()->name) 
-                {
-                    $users=User::all();
-                    foreach ($users as $value) 
-                    {
-                        if ($value->name!=request()->name) 
-                        {
-                            $exist=1;
-                        }    
-                    }
-                    if ($exist==0) 
-                    {
-                        $user->name=request()->name;
-                    } 
-                    else 
-                    {
-                        request()->session()->flash('alert-warning', '
-                        Name already taken. Please try a different one.');
-                    }
-                }
-                $user->email=request()->email;
-                $user->description=request()->description;
-                try 
-                {
-                    $user->rang=request()->rang;
-                } catch (\Throwable $th) {} //pas de catch car on verifie juste si la request existe si elle xiste pas bah rien
-                
-                try 
-                {
-                    $user->Sprite=request()->SpriteImgInput;
-                    $user->friend_Code=request()->friendCode;
-                } catch (\Throwable $th) {}
-                
-                
-                $user->save();
-
-                request()->session()->flash('alert-success', 'The profile was successful update!');
-            } 
-            catch (\Throwable $th) 
-            {
-                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
-            }
-            
-            return redirect()->back();
-        }
-
-        public function delete_profile($id)
-        { try 
-            {
-                $user=User::where('id',$id)->first();
-                $name=$user->name;
-                $calendriers=Calendrier::where('Id_User',$id)->get();
-                foreach ($calendriers as $calendrier) 
-                {
-                    $lignes=Ligne::where('Id_calendrier',$calendrier->Id)->get();
-                    foreach ($lignes as $ligne) 
-                    {
-                        $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
-                        $ligne->delete();
-                        $calendrier_Pokemon->delete();
-                    }
-                    $calendrier->delete();
-                }
-
-                $user->delete();
-                request()->session()->flash('alert-success', 'The profile "'.$name.'" was successful delete!');
-            } 
-            catch (\Throwable $th) 
-            {
-                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
-            }
-            
-            return redirect()->back();
-        }
-        
         public function getStats()
         {
             try 
@@ -498,8 +422,93 @@ class PokemonController extends Controller
             return view('/statistics',compact('stats'));
         }
 
+        //SETTER
+        public function update_profile($id)
+        { 
+            try 
+            {
+                $exist=0;
+                $user = User::where("id",$id)->first();
+
+                if ($user->name!=request()->name) 
+                {
+                    $users=User::all();
+                    foreach ($users as $value) 
+                    {
+                        if ($value->name!=request()->name) 
+                        {
+                            $exist=1;
+                        }    
+                    }
+                    if ($exist==0) 
+                    {
+                        $user->name=request()->name;
+                    } 
+                    else 
+                    {
+                        request()->session()->flash('alert-warning', '
+                        Name already taken. Please try a different one.');
+                    }
+                }
+                $user->email=request()->email;
+                $user->description=request()->description;
+                if (request()->rang) 
+                {
+                    $user->rang=request()->rang;
+                }
+                if (request()->SpriteImgInput) 
+                {
+                    $user->Sprite=request()->SpriteImgInput;
+                    $user->friend_Code=request()->friendCode;
+                }
+               
+                
+                
+                $user->save();
+
+                request()->session()->flash('alert-success', 'The profile was successful update!');
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+            
+            return redirect()->back();
+        }
+        public function delete_profile($id)
+        { 
+            try 
+            {
+                $user=User::where('id',$id)->first();
+                $name=$user->name;
+                $calendriers=Calendrier::where('Id_User',$id)->get();
+                foreach ($calendriers as $calendrier) 
+                {
+                    $lignes=Ligne::where('Id_calendrier',$calendrier->Id)->get();
+                    foreach ($lignes as $ligne) 
+                    {
+                        $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
+                        $ligne->delete();
+                        $calendrier_Pokemon->delete();
+                    }
+                    $calendrier->delete();
+                }
+
+                $user->delete();
+                request()->session()->flash('alert-success', 'The profile "'.$name.'" was successful delete!');
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+            
+            return redirect()->back();
+        }
+        
+        
+
     /******* TYPE *******/
-        //GET ALL TYPE
+        //GETTER
         public function getType()
         { 
             try 
@@ -516,7 +525,7 @@ class PokemonController extends Controller
 
 
     /******* ADMIN *******/
-        
+        //GETTER
         public function admin()
         {
             try 
@@ -531,6 +540,7 @@ class PokemonController extends Controller
             return view('admin/admin',compact('users','calendriers'));
         }
 
+        //SETTER
         public function update_admin($id)
         { 
             try 
