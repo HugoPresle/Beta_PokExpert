@@ -89,7 +89,7 @@
                                                 </div>
                                             </div>
                                             {{-- la meme combine input cahcer pour get donner --}}
-                                            <div hidden >
+                                            <div hidden>
                                                 <input type="text" name="pokemon_name" id="pokemon_name">
                                                 <input type="text" name="user" id="user" value="{{Auth::user()->id}}">
                                             </div><br>
@@ -108,69 +108,68 @@
                                                     <tbody>
                                                         <?php
                                                             try 
-                                                            {
-                                                                $id=htmlspecialchars($_COOKIE["id"]);
-                                                                for ($i=0; $i<$id;$i++ ) 
-                                                                {    
+                                                            {  
+                                                                $tab1=[];
+                                                                $tab2=[];
+                                                                $data=json_decode($_COOKIE["JsonPokemon"], true);
+                                                                try {$tab1= explode(",",$data['Last']);}catch (\Throwable $th) {}
+                                                                try {$tab2= explode(",",$data['New']);}catch (\Throwable $th) {}
+                                                                $tabs= array_merge($tab1,$tab2);
+                                                                foreach ($tabs as $tab) 
+                                                                {
                                                                     try 
+                                                                    {   
+                                                                        $newpokemon= explode("/",$tab);
+                                                                        $tabPokemons[]=
+                                                                        [
+                                                                            "Name"=>$newpokemon[0],
+                                                                            "Form"=>$newpokemon[1],
+                                                                            "Shiny"=>$newpokemon[2]
+                                                                        ];
+                                                                    } catch (\Throwable $th) {}
+                                                                }
+                                                                foreach ($tabPokemons as $tabPokemon) 
+                                                                {
+                                                                    $pokemon=Pokemon::where('Nom',$tabPokemon['Name'])->first();
+                                                                    switch ($tabPokemon['Form'])
                                                                     {
-                                                                        $data=json_decode($_COOKIE["name$i"], true);
-                                                                        $pokemon=Pokemon::where('Nom',$data['name'])->first();
-                                                                        if ($pokemon) 
-                                                                        {
-                                                                            switch ($data['form'])
+                                                                        case 0:
+                                                                            $sprite="Sprite_3D";
+                                                                            break;
+                                                                        case 1: 
+                                                                            if ($pokemon->Sprite_3D_Giga) 
                                                                             {
-                                                                                case 0:
-                                                                                    $sprite="Sprite_3D";
-                                                                                    break;
-                                                                                case 1: 
-                                                                                    if ($pokemon->Sprite_3D_Giga) 
-                                                                                    {
-                                                                                        $sprite="Sprite_3D_Giga";
-                                                                                    }
-                                                                                    else 
-                                                                                    {      
-                                                                                        $sprite="Sprite_3D";
-                                                                                    }
-                                                                                    break;
+                                                                                $sprite="Sprite_3D_Giga";
                                                                             }
-                                                                            switch ($data['shiny']) 
-                                                                            {
-                                                                                case 0:
-                                                                                    $shiny="_Shiny";
-                                                                                    break;
-                                                                                case 1:
-                                                                                    $shiny="";
-                                                                                    break;
+                                                                            else 
+                                                                            {      
+                                                                                $sprite="Sprite_3D";
                                                                             }
-                                                                            ?>
-                                                                        <tr>
-                                                                            <td>{{$pokemon->Nom}}</td>
-                                                                            <td ><img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}"></td>  
-                                                                            <td><i class="fas fa-trash-alt" style="color: red" onclick="deleteCookies('name{{$i}}')"></i></td>
-                                                                        </tr><?php 
-                                                                        }
-                                                                        
+                                                                            break;
                                                                     }
-                                                                    catch (\Throwable $th)
+                                                                    switch ($tabPokemon['Shiny']) 
                                                                     {
-                                                                        echo '<div class="alert alert-danger text-center col-md-6 mx-auto" role="alert">
-                                                                                <h4><i class="fas fa-exclamation-triangle"></i> Oops</h4>
-                                                                                <p>Something went wrong... Please reload the page.</a>
-                                                                            </div>';
-                                                                    }  
-                                                                } 
-                                                            }catch (\Throwable $th){}
+                                                                        case 0:
+                                                                            $shiny="_Shiny";
+                                                                            break;
+                                                                        case 1:
+                                                                            $shiny="";
+                                                                            break;
+                                                                    }?>
+                                                                    <tr>
+                                                                        <td>{{$pokemon->Nom}}</td>
+                                                                        <td><img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}"></td>  
+                                                                        <td><i class="fas fa-trash-alt" style="color: red" onclick="deleteCookies('{{$tabPokemon['Name']}}','{{$tabPokemon['Form']}}','{{$tabPokemon['Shiny']}}')"></i></td>
+                                                                    </tr><?php
+                                                                }
+                                                            }
+                                                            catch (\Throwable $th){}
                                                         ?>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <br>
-                                            <a style="color: red; font-weight: bold" type="button" onclick="clearAll()">
-                                                Clear The List 
-                                                <i class="fas fa-trash"></i>
-                                            </a>
                                         </div>
+                                        <a style="color: red; font-weight: bold" type="button" onclick="clearAll()">Clear The List <i class="fas fa-trash"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -188,36 +187,18 @@
     @endguest
 @endsection
 <script>
-    window.onload = load();
-    function load() 
-    {
-        if (!getCookie("id")) 
-        {        
-            document.cookie='id=0';
-        }
-    }
 
     function createData() 
     {
-        var i=getCookie('id');
-        var list="";
-        for (let index = 0; index < i; index++) 
-        {
-            list=list+getCookie('name'+index);
-            document.cookie = 'name'+index+'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-            document.cookie = 'id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        }
-            // Pour avoir le string ideal pour le controler pour explode
-        list=list
-                .replaceAll("}{","/")
-                .replaceAll("{","")
-                .replaceAll("\"name\":","")
-                .replaceAll("\"form\":","")
-                .replaceAll("\"shiny\":","")
-                .replaceAll("\"","")
-                .replaceAll("}","")
-                ;
-        document.getElementById('pokemon_name').value=document.getElementById('pokemon_name').value+list;
+        var string=getCookie('JsonPokemon').
+            replaceAll('"',"").
+            replace(',,',",").
+            replaceAll('{Last:,',"").
+            replaceAll('New:',"").
+            replaceAll('}',"");
+        document.getElementById('pokemon_name').value=string;
+        document.cookie = 'JsonPokemon=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.location.reload();
     }
 
     function setCookies() 
@@ -225,32 +206,34 @@
         var name=document.getElementById('searchInp').value;
         if (name.length>=4) 
         {
-            cookieId=getCookie("id");
-            document.cookie='name'+cookieId+'='+JSON.stringify
+            document.cookie='JsonPokemon='+JSON.stringify
                 ({
-                    name: name,
-                    form:radioCheck(document.getElementsByName('Formradio')),
-                    shiny:radioCheck(document.getElementsByName('ShinyRadio')) 
-                })+';max-age=7200';
+                    Last:getCookie("JsonPokemon").
+                         replaceAll('"',"").
+                         replaceAll('{Last:',"").
+                         replaceAll('New:',"").
+                         replaceAll('}',"").
+                         replaceAll(/\\/g,""),
 
-            cookieId=+cookieId+1
-            document.cookie='id='+cookieId+';max-age=7200';
+                    New: name+'/'+radioCheck(document.getElementsByName('Formradio'))+'/'+radioCheck(document.getElementsByName('ShinyRadio'))
+                })+';max-age=7200';
             document.location.reload();
         }
         else
         {
             if (name=='Abo'|| name=='Mew'|| name=='Tic') 
             {
-                cookieId=getCookie("id");
-                document.cookie='name'+cookieId+'='+JSON.stringify
-                    ({
-                        name: name,
-                        form:radioCheck(document.getElementsByName('Formradio')),
-                        shiny:radioCheck(document.getElementsByName('ShinyRadio')) 
-                    })+';max-age=7200';
+                document.cookie='JsonPokemon='+JSON.stringify
+                ({
+                    Last:getCookie("JsonPokemon").
+                         replaceAll('"',"").
+                         replaceAll('{Last:',"").
+                         replaceAll('New:',"").
+                         replaceAll('}',"").
+                         replaceAll(/\\/g,""),
 
-                cookieId=+cookieId+1
-                document.cookie='id='+cookieId+';max-age=86400';
+                    New: ','+name+'/'+radioCheck(document.getElementsByName('Formradio'))+'/'+radioCheck(document.getElementsByName('ShinyRadio'))
+                })+';max-age=7200';
                 document.location.reload();
             }
         }
@@ -288,9 +271,20 @@
         return "";
     }
 
-    function deleteCookies(cname) 
+    function deleteCookies(name,form,shiny) 
     {
-        document.cookie = cname +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        string=name+'/'+form+'/'+shiny
+        document.cookie='JsonPokemon='+JSON.stringify
+                ({
+                    Last:getCookie("JsonPokemon").
+                         replaceAll('{"Last":',"").
+                         replaceAll('"',"").
+                         replaceAll('New:',"").
+                         replaceAll('}',"").
+                         replaceAll(/\\/g,"").
+                         replace(string,"").
+                         replace(",,",",")
+                         })+';max-age=7200';
         document.location.reload();
     }
 
@@ -299,13 +293,8 @@
         var agree=confirm("Are you sure you want to remove all pokemon from this list ?");
         if (agree)
         {
-            var i=getCookie('id');
-            for (let index = 0; index < i; index++) 
-            {
-                document.cookie = 'name'+index+'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-                document.cookie = 'id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-                document.location.reload();
-            }
+            document.cookie = 'JsonPokemon=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            document.location.reload();
         }
     }
 </script>

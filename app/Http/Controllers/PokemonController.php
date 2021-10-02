@@ -218,10 +218,10 @@ class PokemonController extends Controller
                 
                 if (request()->pokemon_name!=null) 
                 {
-                    $pokemonSplit= explode("/",request()->pokemon_name);
+                    $pokemonSplit= explode(",",request()->pokemon_name);
                     foreach ($pokemonSplit as $value) 
                     {
-                        list($name,$form,$shiny)=explode(",",$value);
+                        list($name,$form,$shiny)=explode("/",$value);
                         try 
                         {
                             $calendrier_Pokemon= new Calendrier_Pokemon;
@@ -252,12 +252,14 @@ class PokemonController extends Controller
                 }
                 else 
                 {
+                    Calendrier::where("Id",$calendrier->Id)->delete();
                     request()->session()->flash('alert-warning', 'You need to have a least one pokemon in your list.');
                 }
                     
             } 
             catch (\Throwable $th) 
             {
+                Calendrier::where("Id",$calendrier->Id)->delete();
                 request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
             }
             return redirect()->back();
