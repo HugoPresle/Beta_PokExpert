@@ -49,6 +49,19 @@ class PokemonController extends Controller
             }
             return view('pokedex',compact('pokemons','type_pokemon'));
         }
+        public function loadAllByName($name)
+        {
+            try 
+            {
+                $type_pokemon=Type_Pokemon::all();
+                $pokemon=Pokemon::where('Nom',$name)->first();
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+            return view('pokemon',compact('pokemon','type_pokemon'));
+        }
         //SETTER
         public function create()
         {

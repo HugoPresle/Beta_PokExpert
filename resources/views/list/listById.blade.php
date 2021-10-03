@@ -125,9 +125,13 @@
                             ?>
                             <tr>
                                 <td>{{$i}}</td>
-                                <td>{{$pokemon->Nom}}</td>
                                 <td>
-                                  <img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}">
+                                  <a style="color: inherit;text-decoration: none" href="../pokedex/{{$pokemon->Nom}}" style="text-decoration: none">{{$pokemon->Nom}}</a>
+                                </td>
+                                <td>
+                                  <a style="color: inherit;text-decoration: none" href="../pokedex/{{$pokemon->Nom}}" style="text-decoration: none">
+                                    <img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}">
+                                  </a>
                                 </td>  
                                 <td>
                                     <input name="statut{{$calendrier_pokemon->Id}}" style="width: 30px; height: 30px;" class="form-check-input position-static" type="checkbox" id="statut{{$calendrier_pokemon->Id}}"
@@ -283,9 +287,13 @@
                         ?>
                         <tr>
                             <td>{{$i}}</td>
-                            <td>{{$pokemon->Nom}}</td>
                             <td>
-                              <img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}">
+                              <a style="color: inherit;text-decoration: none" href="../pokedex/{{$pokemon->Nom}}" style="text-decoration: none">{{$pokemon->Nom}}</a>
+                            </td>
+                            <td>
+                              <a style="color: inherit;text-decoration: none" href="../pokedex/{{$pokemon->Nom}}" style="text-decoration: none">
+                                <img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}">
+                              </a>
                             </td>  
                             <td>
                                 <input name="statut{{$calendrier_pokemon->Id}}" style="width: 30px; height: 30px;" class="form-check-input position-static" type="checkbox" id="statut{{$calendrier_pokemon->Id}}"

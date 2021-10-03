@@ -50,8 +50,15 @@
                     @if ($pokemon->Id<10000) {{-- Pour cacher les formes alola qui on un id de plus de 10.000 --}}
                       <tr>
                           <td> {{$pokemon->Id}} </td>
-                          <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Sprite_2D}}" alt=""></td>
-                          <td> {{$pokemon->Nom}} </td>
+                          <td>
+                            <a style="text-decoration: none"  href="../pokedex/{{$pokemon->Nom}}">
+                              <img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Sprite_2D}}" alt=""></td>
+                            </a>
+                          <td>
+                            <a style="color: inherit;"  href="../pokedex/{{$pokemon->Nom}}">
+                              {{$pokemon->Nom}}
+                            </a>
+                          </td>
                           <td> {{$pokemon->Nom_Anglais}} </td>
                           <td>
                             @foreach ($type_pokemon as $item) 
@@ -101,8 +108,16 @@
                               <img src="../../../img/Sprite_Mega_Gemme/{{$pokemon->Nom."ite"}}.png">
                             @endif
                           </td>
-                          <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$formPoke->Generation}}G/{{$formPoke->Sprite_2D}}" alt=""></td>
-                          <td> {{$formPoke->Nom}} </td>
+                          <td>
+                            <a style="text-decoration: none"  href="../pokedex/{{$formPoke->Nom}}">
+                              <img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$formPoke->Generation}}G/{{$formPoke->Sprite_2D}}">
+                            </a>
+                          </td>
+                          <td>
+                            <a style="color: inherit;"  href="../pokedex/{{$formPoke->Nom}}">
+                              {{$formPoke->Nom}}
+                            </a>
+                          </td>
                           <td> {{$formPoke->Nom_Anglais}} </td>
                           <td>
                             @foreach ($type_pokemon as $item) 
@@ -138,9 +153,20 @@
                             $formPokeX=Pokemon::where('Nom',$nom)->first();
                           @endphp
                           <tr style="color:{{$color}}">
-                            <td><a hidden>{{$pokemon->Id}}</a><img src="../../../img/Sprite_Mega_Gemme/{{$pokemon->Nom."ite_X"}}.png"></td>
-                            <td><img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$formPokeX->Generation}}G/{{$formPokeX->Sprite_2D}}" alt=""></td>
-                            <td> {{$formPokeX->Nom}} </td>
+                            <td>
+                              <a hidden>{{$pokemon->Id}}</a>
+                              <img src="../../../img/Sprite_Mega_Gemme/{{$pokemon->Nom."ite_X"}}.png">
+                            </td>
+                            <td>
+                              <a style="text-decoration: none"  href="../pokedex/{{$formPokeX->Nom}}">
+                                <img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$formPokeX->Generation}}G/{{$formPokeX->Sprite_2D}}">
+                              </a>
+                            </td>
+                            <td>
+                              <a style="color: inherit;"  href="../pokedex/{{$formPokeX->Nom}}">
+                                {{$formPokeX->Nom}}
+                              </a>
+                            </td>
                             <td> {{$formPokeX->Nom_Anglais}} </td>
                             <td>
                               @foreach ($type_pokemon as $item) 

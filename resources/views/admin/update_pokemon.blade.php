@@ -1,22 +1,42 @@
+@php
+  use \App\Models\Pokemon;
+@endphp
+
+
 @extends('layouts.header')
 @section('content')
     @auth 
         @if (Auth::user()->rang =='admin')
             @if ($pokemon!=null)
                 <h1 style="text-align: center">
-                    @if ($pokemon->Id -1 !=0)
-                        <a href="../update/{{$pokemon->Id -1}}" style="color: black;text-decoration: none;">
-                            <i class="fas fa-arrow-left"></i>
-                        </a>
-                    @endif
-                    <strong>
-                        | {{$pokemon->Nom}} 
-                    <img src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Sprite_2D}}" width="100px">  |</strong>
-                    @if ($pokemon->Id +1 < 898)
-                        <a href="../update/{{$pokemon->Id +1}}" style="color: black">
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    @endif
+                    <div class="d-flex justify-content-around">
+                        <div>
+                            @php try{$previous=Pokemon::where('Id',$pokemon->Id-1)->firstOrFail();}catch(\Throwable $th){} @endphp
+                            @if (isset($previous))
+                                <h5>
+                                    <img width="40px" src="../../../img/Sprite_Pokemon/Sprite_2D/{{$previous->Generation}}G/{{$previous->Sprite_2D}}">  
+                                    <strong>
+                                        <a style="color: inherit" href="{{$previous->Id}}">{{$previous->Nom}}</a>
+                                    </strong> 
+                                </h5>
+                            @endif
+                        </div>
+                        <div>
+                            <img width="70px" src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Sprite_2D}}">  
+                            <strong>{{$pokemon->Nom}}</strong>
+                        </div>
+                        <div>
+                            @php try{$next=Pokemon::where('Id',$pokemon->Id+1)->firstOrFail();}catch(\Throwable $th){} @endphp
+                            @if (isset($next))
+                                <h5>
+                                    <img width="40px" src="../../../img/Sprite_Pokemon/Sprite_2D/{{$next->Generation}}G/{{$next->Sprite_2D}}">  
+                                    <strong >
+                                        <a style="color: inherit" href="{{$next->Id}}">{{$next->Nom}}</a>
+                                    </strong>
+                                </h5>
+                            @endif
+                        </div>
+                    </div>
                 </h1>
                 <div class="flash-message">
                     @foreach (['danger', 'warning', 'success', 'info'] as $msg)
@@ -40,9 +60,9 @@
                                             <div class="accordion" id="accordionExample">
                                                 {{-- 1 volet --}}
                                                     <div class="card">
-                                                        <div class="card-header" id="headingOne">
+                                                        <div class="card-header" id="headingOne" >
                                                             <h2 class="mb-0">
-                                                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                                <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                                                     [2D/3D/3D_Shiny]
                                                                 </button>
                                                             </h2>
@@ -95,7 +115,7 @@
                                                     <div class="card">
                                                         <div class="card-header" id="headingThree">
                                                             <h2 class="mb-0">
-                                                                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                                <button class="btn btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                                                     [3D_Gigamax/]
                                                                 </button>
                                                             </h2>
@@ -136,6 +156,7 @@
                                 {{-- Partie Right avec les info  --}}
                                 <div class="col-md-8 mb-3" style="float: right">
                                     <div class="card">
+                                        <div class="card-header"></div>
                                         <div class="card-body">  
                                             {{-- INDEX NAME ENNAME GEN --}}
                                             <div class="form-row align-items-center">

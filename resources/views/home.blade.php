@@ -38,7 +38,7 @@
         </div>
         <br><br>
         <div class="alert alert-info text-center" role="alert">
-            <h5>PokExpert is actually in open alpha.
+            <h5>PokExpert is actually in open beta.
             <br>I you found a bug please contact the support at <strong>support.pokexpert@pokexpert.net</strong>
             </h5>
         </div>

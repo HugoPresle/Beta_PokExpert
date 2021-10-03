@@ -30,6 +30,7 @@ Route::get('/autocomplete', [PokemonController::class, 'autocompleteSearch'])->n
 /**********           POKEDEX           **********/
 Route::get('/pokedex', [PokemonController::class,'loadAllOrderById']);
 Route::get('/pokedex/gen/{Id}', [PokemonController::class,'loadAllByGen']);
+Route::get('/pokedex/{name}',[PokemonController::class,'loadAllByName']);
 
 
 
