@@ -200,6 +200,20 @@ class PokemonController extends Controller
             }
             return view('/list/listById',compact('calendrier','lignes','totalP'));
         }
+        public function modifyListById($id)
+        {
+            try 
+            {
+                $calendrier=Calendrier::where('Id',$id)->first();
+                $lignes=Ligne::where('Id_calendrier',$calendrier->Id)->get();
+            } 
+            catch (\Throwable $th) 
+            {
+                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+            }
+            return view('/list/modify_list',compact('calendrier','lignes'));
+        }
+        
         public function loadById($id)
         {
             try 
@@ -277,6 +291,53 @@ class PokemonController extends Controller
             }
             return redirect()->back();
         }
+        public function modify_list($id)
+        { 
+                $calendrier=Calendrier::where('Id',$id)->first();
+                $calendrier->Libelle=request()->name;
+                $calendrier->Public=request()->public;
+                $calendrier->save(); 
+
+
+                if (request()->pokemon_name!=null) 
+                {
+                    $lignes=Ligne::where('Id_calendrier',$id)->get();
+                    foreach ($lignes as $ligne) 
+                    {
+                        $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
+                        $ligne->delete();
+                        $calendrier_Pokemon->delete();
+                    }
+                    $pokemonSplit= explode(",",request()->pokemon_name);
+                    foreach ($pokemonSplit as $value) 
+                    {
+                        try 
+                        {
+                            list($name,$form,$shiny,$statut)=explode("/",$value);
+                            $calendrier_Pokemon= new Calendrier_Pokemon;
+                            $calendrier_Pokemon->Id_Pokemon=Pokemon::where('Nom',$name)->first()->Id;
+                            $calendrier_Pokemon->Shiny=$shiny;
+                            $calendrier_Pokemon->Form=$form;
+                            $calendrier_Pokemon->Statut=$statut;
+                            $calendrier_Pokemon->save();
+        
+                            $ligne= new Ligne;
+                            $ligne->Id_calendrier=$id;
+                            $ligne->Id_calendrier_pokemon=$calendrier_Pokemon->Id;
+                            $ligne->save();
+                        }
+                        catch (\Throwable $th){}
+                        request()->session()->flash('alert-success', 'Your List was successful saved!'); 
+                    }
+                }
+                else
+                {
+                    request()->session()->flash('alert-warning', '
+                    You have selected no Pokemon, please select at least one.');
+                    return redirect()->back();
+                }
+            return redirect('/my_list');
+        }
         public function update_list($id)
         { 
             try 
@@ -304,7 +365,7 @@ class PokemonController extends Controller
                     $calendrier->Statut=1;
                     $calendrier->save();
                 }
-                request()->session()->flash('alert-success', 'Your List was successful update!');
+                request()->session()->flash('alert-success', 'Your List was successful save!');
                 if ($nb==$i) 
                 {
                     $calendrier->Statut=2;

@@ -56,7 +56,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDopdown">
                                     
                                         <a class="dropdown-item" href="/my_list">My list <img src="../../../img/pokeball_menu/Honor_Ball.png" alt="pokeball"></a>
-                                        <a class="dropdown-item" href="/list">All the list <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball"></a>
+                                        <a class="dropdown-item" href="/list">Public list <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball"></a>
                                         <div class="dropdown-divider"> </div>
                                         <a class="dropdown-item" href="/create-list">Create a list <img src="../../../img/pokeball_menu/Reve_Ball.png" alt="pokeball"></a>
                                     </div>

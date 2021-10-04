@@ -1,6 +1,8 @@
 @php
   use \App\Models\Pokemon;
   use \App\Models\Calendrier;
+  use \App\Models\Calendrier_Pokemon;
+  use \App\Models\Ligne;
   use \App\Models\User;
 @endphp
 
@@ -19,7 +21,12 @@
         @foreach ($calendriers as $calendrier)
             <div class="card col-md-2 col-sm-6">
                 <div class="text-center">
-                    <img class="card-img-top" src="../../../img/pokeball_menu/Hyper_Ball.png" style="width: 30%">
+                    @php
+                        $ligne=Ligne::where('Id_calendrier',$calendrier->Id)->first();
+                        $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
+                        $pokemon=Pokemon::where('Id',$calendrier_Pokemon->Id_Pokemon)->first();
+                    @endphp
+                    <img class="card-img-top" src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Nom}}.png" style="width: 30%">
                 </div>
                 <div class="card-body text-center">
                     <h5 class="card-title" style="font-weight: bold">{{$calendrier->Libelle}}</h5>

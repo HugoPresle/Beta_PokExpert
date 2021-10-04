@@ -80,12 +80,17 @@
                                                 </div>
                                                 <br>
                                                 <br>
-                                                <div>
-                                                    <button type="submit" class="btn btn-secondary" name="submit" id="submit" onclick="createData()">
-                                                        <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
-                                                        Create My list !
-                                                        <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
+                                            </div>
+                                            <div class="d-flex justify-content-start">
+                                                <div class="p-2 bd-highlight">
+                                                    <button class="btn btn-link" style="color: inherit;font-size:15px" type="submit" name="submit" id="submit" onclick="createData()">
+                                                        Save My List <i class="fas fa-save" style="color: rgb(21, 192, 35);"></i>
                                                     </button>
+                                                </div>
+                                                <div class="p-2 bd-highlight">
+                                                    <a class="btn btn-link" style="color: inherit;font-size:15px" onclick="clearAll()">
+                                                        Clear The List <i class="fas fa-trash" style="color: red;"></i>
+                                                    </a>
                                                 </div>
                                             </div>
                                             {{-- la meme combine input cahcer pour get donner --}}
@@ -130,37 +135,42 @@
                                                                 }
                                                                 foreach ($tabPokemons as $tabPokemon) 
                                                                 {
-                                                                    $pokemon=Pokemon::where('Nom',$tabPokemon['Name'])->first();
-                                                                    switch ($tabPokemon['Form'])
-                                                                    {
-                                                                        case 0:
-                                                                            $sprite="Sprite_3D";
-                                                                            break;
-                                                                        case 1: 
-                                                                            if ($pokemon->Sprite_3D_Giga) 
-                                                                            {
-                                                                                $sprite="Sprite_3D_Giga";
-                                                                            }
-                                                                            else 
-                                                                            {      
+                                                                    try {
+                                                                        $pokemon=Pokemon::where('Nom',$tabPokemon['Name'])->firstOrFail();
+                                                                        switch ($tabPokemon['Form'])
+                                                                        {
+                                                                            case 0:
                                                                                 $sprite="Sprite_3D";
-                                                                            }
-                                                                            break;
+                                                                                break;
+                                                                            case 1: 
+                                                                                if ($pokemon->Sprite_3D_Giga) 
+                                                                                {
+                                                                                    $sprite="Sprite_3D_Giga";
+                                                                                }
+                                                                                else 
+                                                                                {      
+                                                                                    $sprite="Sprite_3D";
+                                                                                }
+                                                                                break;
+                                                                        }
+                                                                        switch ($tabPokemon['Shiny']) 
+                                                                        {
+                                                                            case 0:
+                                                                                $shiny="_Shiny";
+                                                                                break;
+                                                                            case 1:
+                                                                                $shiny="";
+                                                                                break;
+                                                                        }?>
+                                                                        <tr>
+                                                                            <td>{{$pokemon->Nom}}</td>
+                                                                            <td><img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}"></td>  
+                                                                            <td><i class="fas fa-trash-alt" style="color: red" onclick="deleteCookies('{{$tabPokemon['Name']}}','{{$tabPokemon['Form']}}','{{$tabPokemon['Shiny']}}')"></i></td>
+                                                                        </tr><?php
+                                                                    } 
+                                                                    catch (\Throwable $th) {
+                                                                        //throw $th;
                                                                     }
-                                                                    switch ($tabPokemon['Shiny']) 
-                                                                    {
-                                                                        case 0:
-                                                                            $shiny="_Shiny";
-                                                                            break;
-                                                                        case 1:
-                                                                            $shiny="";
-                                                                            break;
-                                                                    }?>
-                                                                    <tr>
-                                                                        <td>{{$pokemon->Nom}}</td>
-                                                                        <td><img src="../../../img/Sprite_Pokemon/{{$sprite}}{{$shiny}}/{{$pokemon->Generation}}G/{{$pokemon->$sprite}}"></td>  
-                                                                        <td><i class="fas fa-trash-alt" style="color: red" onclick="deleteCookies('{{$tabPokemon['Name']}}','{{$tabPokemon['Form']}}','{{$tabPokemon['Shiny']}}')"></i></td>
-                                                                    </tr><?php
                                                                 }
                                                             }
                                                             catch (\Throwable $th){}
@@ -169,7 +179,6 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        <a style="color: red; font-weight: bold" type="button" onclick="clearAll()">Clear The List <i class="fas fa-trash"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -187,6 +196,11 @@
     @endguest
 @endsection
 <script>
+    //Remove alert apres 5000=5s
+    window.setTimeout(function() {
+      $(".alert").fadeTo(500, 0).slideUp(500, function(){
+          $(this).remove(); 
+      });}, 5000);
 
     function createData() 
     {

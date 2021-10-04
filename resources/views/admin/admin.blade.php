@@ -123,6 +123,11 @@
 
 
 <script>
+    //Remove alert apres 5000=5s
+    window.setTimeout(function() {
+      $(".alert").fadeTo(500, 0).slideUp(500, function(){
+          $(this).remove(); 
+      });}, 5000);
 
     function clique(input) 
     {

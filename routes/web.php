@@ -48,6 +48,10 @@ Route::post('/delete_pokemon/{page}/{Id}',[PokemonController::class,'delete']);
 Route::get('/create-list', [PokemonController::class,'load']);
 Route::post('/create_list', [PokemonController::class,'create_list']);
 
+Route::get('/modify-list/{Id}', [PokemonController::class,'modifyListById']);
+Route::post('/modify_list/{Id}', [PokemonController::class,'modify_list']);
+
+
 Route::get('/list',[PokemonController::class, 'loadPublicList']);
 Route::get('/list/{Id}',[PokemonController::class, 'loadListById']);
 

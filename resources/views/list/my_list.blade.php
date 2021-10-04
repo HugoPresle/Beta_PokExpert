@@ -1,6 +1,8 @@
 @php
   use \App\Models\Pokemon;
   use \App\Models\Calendrier;
+  use \App\Models\Calendrier_Pokemon;
+  use \App\Models\Ligne;
   use \App\Models\User;
 @endphp
 @extends('layouts.header')
@@ -27,7 +29,12 @@
         @foreach ($calendriers as $calendrier)
             <div class="card col-xl-2 col-sm-3 mb-2">
                 <div class="text-center">
-                    <img class="card-img-top" src="../../../img/pokeball_menu/Honor_Ball.png" style="width: 30%">
+                    @php
+                        $ligne=Ligne::where('Id_calendrier',$calendrier->Id)->first();
+                        $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
+                        $pokemon=Pokemon::where('Id',$calendrier_Pokemon->Id_Pokemon)->first();
+                    @endphp
+                    <img class="card-img-top" src="../../../img/Sprite_Pokemon/Sprite_2D/{{$pokemon->Generation}}G/{{$pokemon->Nom}}.png" style="width: 30%">
                 </div>
                 <div class="card-body text-center">
                     <h5 class="card-title" style="font-weight: bold">{{$calendrier->Libelle}}</h5>
@@ -65,3 +72,10 @@
     </div>
 @endguest
 @endsection
+<script>
+  //Remove alert apres 5000=5s
+  window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove(); 
+    });}, 5000);
+</script>

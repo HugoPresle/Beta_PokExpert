@@ -25,10 +25,10 @@
             <a id="title">
               {{$calendrier->Libelle}}
             </a>
-            <input type="text" value="{{$calendrier->Libelle}}" hidden name="titleEdit" id="titleEdit" style="width: auto">
+            <input type="text" value="{{$calendrier->Libelle}}" hidden name="titleEdit" id="titleEdit" >
               @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin')
                 <i class="fas fa-edit" style="cursor: pointer;" onclick="changeTitle(0)" id="img0"></i>
-                <i hidden class="fas fa-times" style="color: red;cursor: pointer;"  onclick="changeTitle(1)" id="img1"></i>
+                <i hidden class="fas fa-times" style="cursor: pointer;color: red;"  onclick="changeTitle(1)" id="img1"></i>
               @endif
           </h1>
           <h4 class="text-center">Finish : 
@@ -151,23 +151,35 @@
               </div>
             </div>
           </div>
-          <br>
-            @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
-                <div class="text-center">
-                  <button type="submit" class="btn btn-secondary" name="btnsubmit" id="btnsubmit">
-                    <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
-                      Save Statut !
-                      <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
+          @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
+            <div class="d-flex flex-row bd-highlight mb-3 justify-content-center">
+              <div class="p-2 bd-highlight">
+                <button type="submit" class="btn btn-link" name="btnsubmit" id="btnsubmit" style="color: rgb(0, 0, 0);;font-size: 20px">
+                    Save <i class="fas fa-save" style="color: rgb(21, 192, 35)"></i>
                   </button>
-                </div>
-            </form>
-            <div class="text-center">
-              <form method="POST" action="/delete_list/0/{{$calendrier->Id}}" id="deleteform" onsubmit="return confirm('Are you sure you want to delete this list ?');">
-                @csrf
-                <button type="submit" class="btn btn-danger" name="delete" id="delete" >
-                    Delete <i class="fas fa-trash"></i>
-                </button>
-              </form>
+                </form>
+              </div>
+
+              <div class="p-2 bd-highlight">
+                <a class="btn btn-link" href="../modify-list/{{$calendrier->Id}}" onclick="CreateJson()" style="color: rgb(0, 0, 0);font-size: 20px">
+                  Modify <i class="fas fa-edit" style="color: rgb(0, 162, 255)"></i>
+                </a>
+              </div> 
+              
+              <div class="p-2 bd-highlight">
+                <a class="btn btn-link" href="#" style="color: rgb(0, 0, 0);font-size: 20px">
+                  Copy <i class="fas fa-copy" style="color: rgb(153, 0, 255)"></i>
+                </a>
+              </div>
+
+              <div class="p-2 bd-highlight">
+                <form method="POST" action="./delete_list/0/{{$calendrier->Id}}" id="deleteform" onsubmit="return confirm('Are you sure you want to delete this list ?');">
+                  @csrf
+                  <button type="submit" class="btn btn-link" name="delete" id="delete" style="color: rgb(0, 0, 0);font-size: 20px">
+                    Delete <i class="fas fa-trash" style="color: red;"></i>
+                  </button>
+                </form>
+              </div>
             </div>
           @endif
       </div>
@@ -324,6 +336,12 @@
 
 @endsection
 <script>
+  //Remove alert apres 5000=5s
+  window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove(); 
+    });}, 5000);
+
   function changeTitle(value) 
   {
     if (value==0) 
@@ -387,6 +405,52 @@
           tr[i].style.display = "none";
         }
       }       
+    }
+  }
+
+  function getCookie(cname)
+    {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) 
+        {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') 
+            {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) 
+            {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+  function CreateJson() 
+  {
+    
+    document.cookie = 'JsonModify=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    @php 
+        foreach ($lignes as $ligne) 
+        {
+            $calendrier_Pokemon=Calendrier_Pokemon::where("Id",$ligne->Id_calendrier_pokemon)->first();
+            $pokemons[]=Pokemon::where("Id",$calendrier_Pokemon->Id_Pokemon)->first()->Nom."/".$calendrier_Pokemon->Form."/".$calendrier_Pokemon->Shiny."/".$calendrier_Pokemon->Statut;
+        }
+            echo "var js_pokemon =".json_encode($pokemons).";";
+    @endphp
+    for (let index = 0; index < js_pokemon.length; index++) 
+    {
+      document.cookie='JsonModify='+JSON.stringify
+          ({
+              Last:getCookie("JsonModify").
+                  replaceAll('"',"").
+                  replaceAll('{Last:',"").
+                  replaceAll('New:',"").
+                  replaceAll('}',"").
+                  replaceAll(/\\/g,"")+","+js_pokemon[index],
+              })+';path=/;max-age=7200';
     }
   }
 </script>
