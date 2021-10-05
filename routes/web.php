@@ -49,14 +49,14 @@ Route::get('/create-list', [PokemonController::class,'load']);
 Route::post('/create_list', [PokemonController::class,'create_list']);
 
 Route::get('/modify-list/{Id}', [PokemonController::class,'modifyListById']);
-Route::post('/modify_list/{Id}', [PokemonController::class,'modify_list']);
-
+Route::get('/copy_list/{Id}', [PokemonController::class,'copyById']);
 
 Route::get('/list',[PokemonController::class, 'loadPublicList']);
 Route::get('/list/{Id}',[PokemonController::class, 'loadListById']);
 
 Route::post('/update_list/{Id}', [PokemonController::class,'update_list']);
 Route::post('/delete_list/{test}/{Id}', [PokemonController::class,'delete_list']);
+Route::post('/modify_list/{Id}', [PokemonController::class,'modify_list']);
 
 
 /**********           PROFILE           **********/

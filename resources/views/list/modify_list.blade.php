@@ -100,7 +100,7 @@
                                                         </button>
                                                     </div>
                                                     <div class="p-2 bd-highlight">
-                                                        <a class="btn btn-link" style="color: inherit;font-size:15px" onclick="return confirm('Are you sure you want to remove all pokemon from this list ?');" href="../my_list"> 
+                                                        <a class="btn btn-link" style="color: inherit;font-size:15px" onclick="return confirm('Are you sure you want cancel the modifications ?');" href="../my_list"> 
                                                             Cancel <i class="fas fa-ban" style="color: rgb(255, 136, 0);"></i>
                                                         </a>
                                                     </div> 

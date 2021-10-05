@@ -268,7 +268,7 @@ class PokemonController extends Controller
                     }
                     if ($success>0) 
                     {
-                        request()->session()->flash('alert-success', 'Your List was successful created!'); 
+                        request()->session()->flash('alert-success', 'Your List was successfully created !'); 
                     }
                     else 
                     {
@@ -327,13 +327,12 @@ class PokemonController extends Controller
                             $ligne->save();
                         }
                         catch (\Throwable $th){}
-                        request()->session()->flash('alert-success', 'Your List was successful saved!'); 
+                        request()->session()->flash('alert-success', 'Your list was successfully saved !'); 
                     }
                 }
                 else
                 {
-                    request()->session()->flash('alert-warning', '
-                    You have selected no Pokemon, please select at least one.');
+                    request()->session()->flash('alert-warning', 'You have selected no Pokemon, please select at least one.');
                     return redirect()->back();
                 }
             return redirect('/my_list');
@@ -365,7 +364,7 @@ class PokemonController extends Controller
                     $calendrier->Statut=1;
                     $calendrier->save();
                 }
-                request()->session()->flash('alert-success', 'Your List was successful save!');
+                request()->session()->flash('alert-success', 'Your list '.$calendrier->Libelle.'  was successfully saved !');
                 if ($nb==$i) 
                 {
                     $calendrier->Statut=2;
@@ -394,7 +393,7 @@ class PokemonController extends Controller
                     $calendrier_Pokemon->delete();
                 }
                 $calendrier->delete();
-                request()->session()->flash('alert-success', 'Your List was successful delete!');
+                request()->session()->flash('alert-success', 'Your list was successfully deleted !');
             } 
             catch (\Throwable $th) 
             {
@@ -408,6 +407,42 @@ class PokemonController extends Controller
             {
                 return redirect()->back();
             }
+        }
+        public function copyById($id)
+        { 
+            $calendrier=Calendrier::where("Id",$id)->first();
+
+            $copy_calendrier=new Calendrier();
+            $copy_calendrier->Id_User=Auth::user()->id;
+            $copy_calendrier->Statut=$calendrier->Statut;
+            $copy_calendrier->Libelle=$calendrier->Libelle.'_Copy';
+            $copy_calendrier->Public=1;
+            $copy_calendrier->save();
+
+            $lignes=Ligne::where('Id_calendrier',$id)->get();
+            foreach ($lignes as $ligne) 
+            {
+                try 
+                {
+                    $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
+
+                    $copy_calendrier_Pokemon = new Calendrier_Pokemon;
+                    $copy_calendrier_Pokemon->Id_Pokemon = $calendrier_Pokemon->Id_Pokemon;
+                    $copy_calendrier_Pokemon->Shiny = $calendrier_Pokemon->Shiny;
+                    $copy_calendrier_Pokemon->Form = $calendrier_Pokemon->Form;
+                    $copy_calendrier_Pokemon->Statut = $calendrier_Pokemon->Statut;
+                    $copy_calendrier_Pokemon->save();
+
+                    $copy_ligne= new Ligne;
+                    $copy_ligne->Id_calendrier=$copy_calendrier->Id;
+                    $copy_ligne->Id_calendrier_pokemon=$copy_calendrier_Pokemon->Id;
+                    $copy_ligne->save();
+                }
+                catch(\Throwable $th){}
+            }
+            request()->session()->flash('alert-success','Your list '.$calendrier->Libelle.' have been successfully copied to '.$copy_calendrier->Libelle.' !'); 
+            return redirect()->back();
+
         }
 
     /******* PROFILE *******/
