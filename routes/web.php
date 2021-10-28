@@ -13,7 +13,6 @@ use App\Http\Controllers\HomeController;
 /**********           SIMPLE ROUTE            **********/
 Route::get('/', function () {return view('home');});
 Route::get('/home', function () {return view('home');});
-Route::get('/my_list', function () {return view('/list/my_list');});
 
 
 /**********           ADMIN            **********/
@@ -52,10 +51,12 @@ Route::get('/modify-list/{Id}', [PokemonController::class,'modifyListById']);
 Route::get('/copy_list/{Id}', [PokemonController::class,'copyById']);
 
 Route::get('/list',[PokemonController::class, 'loadPublicList']);
+Route::get('/my_list',[PokemonController::class, 'loadUserList']);
 Route::get('/list/{Id}',[PokemonController::class, 'loadListById']);
 
 Route::post('/update_list/{Id}', [PokemonController::class,'update_list']);
 Route::post('/delete_list/{test}/{Id}', [PokemonController::class,'delete_list']);
+Route::post('/delete_selected', [PokemonController::class,'delete_selected']);
 Route::post('/modify_list/{Id}', [PokemonController::class,'modify_list']);
 
 

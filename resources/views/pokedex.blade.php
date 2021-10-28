@@ -204,11 +204,6 @@
               </tbody>
             </table>
           </div>
-        {{-- PAGINATION mais pas trop fan a voire --}}
-
-        {{-- <div class="col-12 ">
-          {{ $pokemons->links("pagination::bootstrap-4")}}
-        </div> --}}
       </div>
     </div>
   </div>

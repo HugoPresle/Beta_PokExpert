@@ -29,10 +29,12 @@
                         <img src="../../../img/pokeball_menu/Hyper_Ball.png" alt="pokeball">
                         <a href="./list">List</a>
                     </li>
-                    <li class="nav-item">
-                        <img src="../../../img/pokeball_menu/Honor_Ball.png" alt="pokeball">
-                        <a href="./my_list">My List</a>
-                    </li>
+                    @auth
+                        <li class="nav-item">
+                            <img src="../../../img/pokeball_menu/Honor_Ball.png" alt="pokeball">
+                            <a href="./my_list">My List</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </div>

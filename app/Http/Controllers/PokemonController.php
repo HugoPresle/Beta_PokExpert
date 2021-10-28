@@ -25,8 +25,6 @@ class PokemonController extends Controller
             try 
             {
                 $pokemons=Pokemon::orderBy('Id')->get();
-                // SI PAGINATION                   
-                // $pokemons=Pokemon::orderBy('Id')->paginate(20); 
                 $type_pokemon=Type_Pokemon::all();
             } 
             catch (\Throwable $th) 
@@ -163,12 +161,27 @@ class PokemonController extends Controller
             try 
             {
                 $calendriers=Calendrier::where('Public',0)->get();
+                $public=true;
             } 
             catch (\Throwable $th) 
             {
                 request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
             }
-            return view('/list/list',compact('calendriers'));
+            return view('/list/list',compact('calendriers','public'));
+        }
+        public function loadUserList()
+        { 
+            try 
+            {
+                
+                $calendriers=Calendrier::where('Id_User',Auth::user()->id)->get();
+                $public=false;
+                return view('/list/list',compact('calendriers','public'));
+            } 
+            catch (\Throwable $th) 
+            {
+                return redirect()->back();
+            }
         }
         public function loadListById($id)
         {
@@ -193,12 +206,14 @@ class PokemonController extends Controller
                 
                 $total=($nbPokemonCapturer+$nbPokemonRestant);
                 $totalP=round(((100*$nbPokemonCapturer)/$total), 2);
+                
+                return view('/list/listById',compact('calendrier','lignes','totalP'));
             } 
             catch (\Throwable $th) 
             {
-                request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+                request()->session()->flash('alert-danger', 'You don\'t have access to this list.');
+                return redirect()->back(); 
             }
-            return view('/list/listById',compact('calendrier','lignes','totalP'));
         }
         public function modifyListById($id)
         {
@@ -213,7 +228,6 @@ class PokemonController extends Controller
             }
             return view('/list/modify_list',compact('calendrier','lignes'));
         }
-        
         public function loadById($id)
         {
             try 
@@ -407,6 +421,51 @@ class PokemonController extends Controller
             {
                 return redirect()->back();
             }
+        }
+        public function delete_selected()
+        {
+            $tab=[];
+            $calendriers=Calendrier::where('Id_User',Auth::user()->id)->get();
+            for ($i=0; $i <count($calendriers) ; $i++) 
+            { 
+                $request="check".$i;
+                if (isset(request()->$request)) 
+                {
+                    $tab[]=request()->$request;
+                }
+            } 
+            if (count($tab)>0) 
+            { 
+                try 
+                {
+                    foreach ($tab as $value) 
+                    {
+                        $calendrier=Calendrier::where('Id',$value)->first();
+                        $lignes=Ligne::where('Id_calendrier',$value)->get();
+        
+                        foreach ($lignes as $ligne) 
+                        {
+                            $calendrier_Pokemon= Calendrier_Pokemon::where('Id',$ligne->Id_calendrier_pokemon)->first();
+                            $ligne->delete();
+                            $calendrier_Pokemon->delete();
+                        }
+                        $calendrier->delete();
+                        request()->session()->flash('alert-success', 'Your list was successfully deleted !');
+                    }
+                    
+                } 
+                catch (\Throwable $th) 
+                {
+                    request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+                }
+            }
+            else
+            {
+                request()->session()->flash('alert-danger', 'There is no list selected...');  
+            }
+           
+
+            return redirect()->back();
         }
         public function copyById($id)
         { 

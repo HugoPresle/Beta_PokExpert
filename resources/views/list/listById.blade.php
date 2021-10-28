@@ -161,39 +161,37 @@
             </div>
           </div>
           <div class="d-flex flex-row bd-highlight mb-3 justify-content-center">
-          @auth
-            @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
-                <div class="p-2 bd-highlight">
-                  <button type="submit" class="btn btn-link" name="btnsubmit" id="btnsubmit" style="color: rgb(0, 0, 0);;font-size: 20px">
-                      Save <i class="fas fa-save" style="color: rgb(21, 192, 35)"></i>
-                    </button>
-                  </form>
-                </div>
-                <div class="p-2 bd-highlight">
-                  <a class="btn btn-link" href="../modify-list/{{$calendrier->Id}}" onclick="CreateJson()" style="color: rgb(0, 0, 0);font-size: 20px">
-                    Modify <i class="fas fa-edit" style="color: rgb(0, 162, 255)"></i>
-                  </a>
-                </div> 
-              @endif
-                <div class="p-2 bd-highlight">
-                  <a class="btn btn-link" href="../copy_list/{{$calendrier->Id}}" style="color: rgb(0, 0, 0);font-size: 20px">
-                    Copy <i class="fas fa-copy" style="color: rgb(153, 0, 255)"></i>
-                  </a>
-                </div>
-            @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
-                <div class="p-2 bd-highlight">
-                  <form method="POST" action="../../delete_list/0/{{$calendrier->Id}}" id="deleteform" onsubmit="return confirm('Are you sure you want to delete this list ?');">
-                    @csrf
-                    <button type="submit" class="btn btn-link" name="delete" id="delete" style="color: rgb(0, 0, 0);font-size: 20px">
-                      Delete <i class="fas fa-trash" style="color: red;"></i>
-                    </button>
-                  </form>
-                </div>
-              </div>
-              @endif    
-          @endauth
-      </div>
-        
+            @auth
+              @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
+                  <div class="p-2 bd-highlight">
+                    <button type="submit" class="btn btn-link" name="btnsubmit" id="btnsubmit" style="color: rgb(0, 0, 0);;font-size: 20px">
+                        Save <i class="fas fa-save" style="color: rgb(21, 192, 35)"></i>
+                      </button>
+                    </form>
+                  </div>
+                  <div class="p-2 bd-highlight">
+                    <a class="btn btn-link" href="../modify-list/{{$calendrier->Id}}" onclick="CreateJson()" style="color: rgb(0, 0, 0);font-size: 20px">
+                      Modify <i class="fas fa-edit" style="color: rgb(0, 162, 255)"></i>
+                    </a>
+                  </div> 
+                @endif
+                  <div class="p-2 bd-highlight">
+                    <a class="btn btn-link" href="../copy_list/{{$calendrier->Id}}" style="color: rgb(0, 0, 0);font-size: 20px">
+                      Copy <i class="fas fa-copy" style="color: rgb(153, 0, 255)"></i>
+                    </a>
+                  </div>
+              @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin' )
+                  <div class="p-2 bd-highlight">
+                    <form method="POST" action="../../delete_list/0/{{$calendrier->Id}}" id="deleteform" onsubmit="return confirm('Are you sure you want to delete this list ?');">
+                      @csrf
+                      <button type="submit" class="btn btn-link" name="delete" id="delete" style="color: rgb(0, 0, 0);font-size: 20px">
+                        Delete <i class="fas fa-trash" style="color: red;"></i>
+                      </button>
+                    </form>
+                  </div>
+                @endif    
+            @endauth
+          </div>
     @else
       <div class="alert alert-danger text-center col-md-6 mx-auto" role="alert">
           <h4><i class="fas fa-exclamation-triangle"></i> Arrhh</h4>
