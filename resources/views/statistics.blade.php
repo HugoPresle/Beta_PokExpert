@@ -206,7 +206,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive-sm ">
-                            <table class="table">
+                            <table class="table" style="table-layout:fixed;">
                                 <thead class="thead-light">
                                     <tr>
                                         <th scope="col">Name</th>
@@ -223,7 +223,9 @@
                                             foreach ($variable as $key => $value) 
                                                 {?>
                                                     <tr>
-                                                        <th scope="row"><a href="../list/{{$key}}">{{Calendrier::where('Id',$key)->first()->Libelle}}</a></th>
+                                                        <th scope="row" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
+                                                            <a href="../list/{{$key}}">{{Calendrier::where('Id',$key)->first()->Libelle}}</a>
+                                                        </th>
                                                         <?php 
                                                         foreach ($value as $key=> $a) 
                                                         {

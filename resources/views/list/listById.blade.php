@@ -26,10 +26,10 @@
         <form method="POST" action="/update_list/{{$calendrier->Id}}">
           @csrf
           <h1 class="text-center"><strong>List :</strong> 
-            <a id="title">
+            <p id="title" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
               {{$calendrier->Libelle}}
-            </a>
-            <input type="text" value="{{$calendrier->Libelle}}" hidden name="titleEdit" id="titleEdit" >
+            </p>
+            <input maxlength="254" type="text" value="{{$calendrier->Libelle}}" hidden name="titleEdit" id="titleEdit" >
             @auth
               @if (Auth::user()->id ==$calendrier->Id_User ||Auth::user()->rang =='admin')
                 <i class="fas fa-edit" style="cursor: pointer;" onclick="changeTitle(0)" id="img0"></i>

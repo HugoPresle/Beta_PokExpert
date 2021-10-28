@@ -68,7 +68,7 @@
                                                 <!-- Submit -->
                                                 <div class="col-md-12">
                                                     <label for="name" style="font-weight: bold">Liste Name: </label>
-                                                    <input autocomplete="off" required id="name" name="name" type="text" class="form-control" placeholder="MyListName..." value="{{$calendrier->Libelle}}" >
+                                                    <input maxlength="254" autocomplete="off" required id="name" name="name" type="text" class="form-control" placeholder="MyListName..." value="{{$calendrier->Libelle}}" >
                                                     
                                                     <label for="" style="font-weight: bold">Do you want to make your list public: </label><br>
                                                     @if ($calendrier->Public==0)

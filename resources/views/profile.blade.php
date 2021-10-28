@@ -101,9 +101,17 @@
                                         Nintendo Code :
                                     </h6>
                                     <span id="friendCode" class="text-secondary">{{$pageUser->friend_Code}}</span>
-                                    <input class="form-control"  hidden id="friendCodeEdit" name="friendCode" type="text" value="{{$pageUser->friend_Code}}" placeholder="0000-0000-0000" maxlength="14">
+                                    <input autocomplete="false" class="form-control"  hidden id="friendCodeEdit" name="friendCode" type="text" value="{{$pageUser->friend_Code}}" placeholder="0000-0000-0000" maxlength="14">
                                 </li> 
                             </ul>
+                            <script>
+                                document.getElementById('friendCodeEdit').addEventListener("keyup", function()
+                                {
+                                    txt=this.value;
+                                    if (txt.length==4 || txt.length==9)
+                                        this.value=this.value+"-";
+                                });
+                            </script>
                         </div>
                     </div>
 
@@ -125,7 +133,7 @@
                                             <h6 class="mb-0">Name</h6>
                                         </div>
                                         <div class="col-sm-9 text-secondary">
-                                            <input autocomplete="off" class="form-control" name="name" type="text" value="{{$pageUser->name}}">
+                                            <input maxlength="100" autocomplete="off" class="form-control" name="name" type="text" value="{{$pageUser->name}}">
                                         </div>
                                     </div>
                                         <hr>
@@ -143,7 +151,7 @@
                                             <h6 class="mb-0">Email</h6>
                                         </div>
                                         <div class="col-sm-9 text-secondary">
-                                            <input autocomplete="off" class="form-control" name="email" type="text" value="{{$pageUser->email}}">
+                                            <input maxlength="254" autocomplete="off" class="form-control" name="email" type="text" value="{{$pageUser->email}}">
                                         </div>
                                     </div>
                                         <hr>
