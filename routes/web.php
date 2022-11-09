@@ -57,6 +57,7 @@ Route::get('/list/{Id}',[PokemonController::class, 'loadListById']);
 Route::post('/update_list/{Id}', [PokemonController::class,'update_list']);
 Route::post('/delete_list/{test}/{Id}', [PokemonController::class,'delete_list']);
 Route::post('/delete_selected', [PokemonController::class,'delete_selected']);
+Route::post('/create_selected', [PokemonController::class,'create_selected']);
 Route::post('/modify_list/{Id}', [PokemonController::class,'modify_list']);
 
 

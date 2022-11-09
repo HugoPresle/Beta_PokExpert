@@ -230,7 +230,9 @@
 
                                         @if ($pokemon->Sprite_3D_Giga)
                                             <h5 for="desc"><strong>Gigamax</strong>:</h5>
-                                            <img src="../../../img/Sprite_Pokemon/Sprite_3D_Giga/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Giga}}">
+                                            <img style="cursor: pointer;" onclick="Shiny('goG')" id="goG" src="../../../img/Sprite_Pokemon/Sprite_3D_Giga/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Giga}}">
+                                            <img style="cursor: pointer;" hidden onclick="Shiny('backG')" id="backG" src="../../../img/Sprite_Pokemon/Sprite_3D_Giga_Shiny/{{$pokemon->Generation}}G/{{$pokemon->Sprite_3D_Giga}}">
+                                            <p style="font-style: italic;font-size: 11px">(Click to see the shiny version !)</p>
                                         @endif
                                         
                                         <h5 for="desc"><strong>Evolution</strong>:</h5>
@@ -254,15 +256,24 @@
 <script>
     function Shiny(params) 
     {
-       if (params=='go') 
-       {
-           document.getElementById('go').hidden=true;
-           document.getElementById('back').hidden=false;
-       }
-       else
-       {
-           document.getElementById('back').hidden=true;
-           document.getElementById('go').hidden=false;
+        switch (params) 
+        {
+            case 'go':
+                document.getElementById('go').hidden=true;
+                document.getElementById('back').hidden=false;
+                break;
+            case 'back':
+                document.getElementById('back').hidden=true;
+                document.getElementById('go').hidden=false;
+                break;
+            case 'goG':
+                document.getElementById('goG').hidden=true;
+                document.getElementById('backG').hidden=false;
+                break;
+            case 'backG':
+                document.getElementById('backG').hidden=true;
+                document.getElementById('goG').hidden=false;
+                break;
        }
     }
 </script>

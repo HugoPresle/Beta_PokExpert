@@ -467,6 +467,58 @@ class PokemonController extends Controller
 
             return redirect()->back();
         }
+        public function create_selected()
+        {
+            $tab=[];
+            $pokemons=Pokemon::orderBy('Id')->get();
+            foreach ($pokemons as $pokemon)             
+            { 
+                $request=$pokemon->Id;
+                if (isset(request()->$request)) 
+                {
+                    $tab[]=request()->$request;
+                }
+            }
+            if (count($tab)>0) 
+            {
+                try 
+                { 
+                    $calendrier = new Calendrier;
+                    $calendrier->Id_User=Auth::user()->id;
+                    $calendrier->Statut=0; // 0-> pas commencer 1-> en cour 2-> FINI
+                    $calendrier->Libelle="Selected Pokemon_ ". date("h:i:sa")."_".date("Y/m/d");
+                    $calendrier->Public=1;
+                    $calendrier->save(); 
+        
+                    foreach ($tab as $value) 
+                    {
+                        $calendrier_Pokemon= new Calendrier_Pokemon;
+                        $calendrier_Pokemon->Id_Pokemon=Pokemon::where('Id',$value)->first()->Id;
+                        $calendrier_Pokemon->Shiny=1;
+                        $calendrier_Pokemon->Form=0;
+                        $calendrier_Pokemon->Statut=0; // 0-> pas capturer 1-> capturer 
+                        $calendrier_Pokemon->save();
+        
+                        $ligne= new Ligne;
+                        $ligne->Id_calendrier=$calendrier->Id;
+                        $ligne->Id_calendrier_pokemon=$calendrier_Pokemon->Id;
+                        $ligne->save();
+                    }
+                    request()->session()->flash('alert-success', 'Your List was successfully created !');  
+                } 
+                catch (\Throwable $th) 
+                {
+                    Calendrier::where("Id",$calendrier->Id)->delete();
+                    request()->session()->flash('alert-danger', 'Oops something went wrong... Please reload the page.'); 
+                }
+            }
+            else
+            {
+                request()->session()->flash('alert-danger', 'There is no pokemon selected...');  
+            }
+            
+            return redirect()->back();;
+        }
         public function copyById($id)
         { 
             $calendrier=Calendrier::where("Id",$id)->first();

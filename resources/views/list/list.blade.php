@@ -40,22 +40,24 @@
                 <input autocomplete="off" type="text" onkeyup="search()" name="searchInp" id="searchInp" class="form-control" placeholder="Search titles..."> 
             </div>
         </div>
-        @if (!$public||Auth::user()->rang =='admin')
-            <div class="text-center">
-                <a class="btn btn-link" id="mul" onclick="hideChekBox(true)" style="color: black; font-size: 15">
-                    Multiple Selections
-                    <i class="fas fa-arrows-alt" style="color: rgb(140, 0, 255);"></i>
-                </a>
-                <a class="btn btn-link" hidden id="cancel" onclick="hideChekBox(false)" style="color: black; font-size: 15">
-                    Cancel selection
-                    <i class="fas fa-ban" style="color: rgb(255, 174, 0);"></i>
-                </a>
-                <button class="btn btn-link" hidden id="del" type="submit" style="color: black; font-size: 15">
-                    Delete selected
-                    <i class="fas fa-trash" style="color: red;"></i>
-                </button>
-            </div>
-        @endif
+        @auth 
+            @if (!$public||Auth::user()->rang =='admin')
+                <div class="text-center">
+                    <a class="btn btn-link" id="mul" onclick="hideChekBox(true)" style="color: black; font-size: 15">
+                        Multiple Selections
+                        <i class="fas fa-arrows-alt" style="color: rgb(140, 0, 255);"></i>
+                    </a>
+                    <a class="btn btn-link" hidden id="cancel" onclick="hideChekBox(false)" style="color: black; font-size: 15">
+                        Cancel selection
+                        <i class="fas fa-ban" style="color: rgb(255, 174, 0);"></i>
+                    </a>
+                    <button class="btn btn-link" hidden id="del" type="submit" style="color: black; font-size: 15">
+                        Delete selected
+                        <i class="fas fa-trash" style="color: red;"></i>
+                    </button>
+                </div>
+            @endif
+        @endauth
         
         <div class="row col-md-12 mx-auto"> 
             @php
